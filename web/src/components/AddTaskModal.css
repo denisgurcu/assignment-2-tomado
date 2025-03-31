@@ -1,0 +1,60 @@
+/* AddTaskModal.css */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  
+  .modal-box {
+    background: #1f1f1f;
+    padding: 2rem;
+    border-radius: 1rem;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    color: white;
+    font-family: var(--font-helvetica);
+  }
+  
+  .modal-box h3 {
+    margin-bottom: 1rem;
+  }
+  
+  .modal-box input,
+  .modal-box textarea,
+  .modal-box select {
+    width: 100%;
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: none;
+    font-family: var(--font-mono);
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  
+  .modal-actions button {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 999px;
+    font-weight: bold;
+    cursor: pointer;
+    background: var(--blue);
+    color: white;
+  }
+  
+  .modal-actions button[type="button"] {
+    background: var(--middlegray);
+  }
+  

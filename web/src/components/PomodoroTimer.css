@@ -1,0 +1,51 @@
+.pomodoro {
+    background-color:var(--black);
+    padding: 2rem;
+    border-radius: 5rem;
+    text-align: center;
+    width: 100%;
+    max-width: 1400px;
+    /* box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); */
+  }
+  
+  .pomodoro h1 {
+    font-size: 10rem;
+    margin: 1rem 0;
+    font-weight: bold;
+    color: #ffffff;
+    /* text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); */
+  }
+  
+  .mode-switch {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .mode-switch button {
+    background: var(--blue);
+    font-family: var(--font-mono);
+    border: none;
+    color: var(--softgray);
+    padding: 1rem 4rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+  }
+  
+  .mode-switch button:hover {
+    background: var(--yellow);
+    color: var(--black);
+  }
+  
+  .mode-switch .active {
+    background: var(--yellow);
+    color: var(--black);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3),
+                0 0 0 4px var(--softgrey);
+    transform: scale(0.98);
+  }
+  

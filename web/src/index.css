@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
+
+
+:root {
+  --blue: #0788EF;
+  --green: #008848;
+  --yellow: #FEB700;
+  --orange: #FF573B;
+  --softgrey: #E9E9E9;
+  --middlegray: #BBBBBB;
+  --darkgrey: #9A9A9A;
+  --black: #202020;
+
+    /* Font families */
+    --font-helvetica: 'Helvetica Neue', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+}
+
+
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  background-color: var(--middlegray);
+  font-family: 'Helvetica Neue', sans-serif;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
