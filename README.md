@@ -1,10 +1,11 @@
 # 🍅 TomaDo – Task Manager + Pomodoro App
 
-**TomaDo** is a full-stack productivity app. 
+**TomaDo** is a full-stack productivity app.
 
-## 👨‍💼 Built for **Airrick Dunfield**  
+## 👨‍💼 Built for **Airrick Dunfield**
 
 ---
+
 It blends a drag-and-drop task board with a Pomodoro timer, letting users organize tasks, manage images, and focus through cycles.
 
 ---
@@ -31,20 +32,20 @@ It blends a drag-and-drop task board with a Pomodoro timer, letting users organi
 
 ---
 
-## 📦 Tech Stack
+## 📆 Tech Stack
 
 | Layer      | Stack / Library                                  |
 |------------|--------------------------------------------------|
 | Frontend   | React (Vite), CSS Modules                        |
 | Backend    | Node.js, Express                                 |
 | Database   | MySQL                                            |
-| Packages   | multer, mysql2, body-parser, cors, emoji-picker-react, @hello-pangea/dnd |
+| Packages   | multer, mysql2, body-parser, cors, emoji-picker-react, @hello-pangea/dnd, nodemon |
 
 ---
 
 ## 📁 Project Structure
 
-```
+```bash
 assignment-2/
 ├── api/                        # Express backend
 │   ├── db.js                   # MySQL connection
@@ -75,7 +76,7 @@ assignment-2/
 ### 1. Set up the Backend (API)
 
 ```bash
-cd assignment-2/api
+cd assignment-2-tomado/api
 npm install
 ```
 
@@ -83,13 +84,12 @@ npm install
 - Import the SQL schema:
 
 ```bash
-mysql -u youruser -p yourdb < exported-db.sql
+mysql -u root -p tomado_db < tomado_db.sql
 ```
 
-- The db.js is configured for local MySQL with root/root, but feel free to adjust these settings based on your environment. Use the included exported-db.sql to recreate the database schema and test data."
+- The `db.js` is configured for local MySQL with `root`/`root`.
 
-
-- Start the backend:
+- Start the backend using nodemon:
 
 ```bash
 npm run dev
@@ -100,7 +100,7 @@ npm run dev
 ### 2. Set up the Frontend
 
 ```bash
-cd web
+cd ../web
 npm install
 npm run dev
 ```
@@ -109,7 +109,15 @@ npm run dev
 
 ---
 
+## 🔗 Notes for Instructor
 
+- All required CRUD operations are implemented.
+- Routes are modular using Express routers.
+- Uploaded files are handled with `multer` and served from a static directory.
+- Includes 2 MySQL tables: `tasks` and `categories` (linked via foreign key).
+- Tasks can be filtered, edited, and visualized using Pomodoro productivity logic.
+- The exported `.sql` file is provided in `/api/tomado-db.sql`.
 
+---
 
 
