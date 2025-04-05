@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'root', // or 'root' if using default MAMP settings
+  password: 'root', 
   database: 'tomado_db'
 });
 

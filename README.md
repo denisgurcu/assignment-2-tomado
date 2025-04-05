@@ -2,9 +2,7 @@
 
 **TomaDo** is a full-stack productivity app. 
 
-## 👨‍💼 
-
-Built for **Airrick Dunfield**  
+## 👨‍💼 Built for **Airrick Dunfield**  
 
 ---
 It blends a drag-and-drop task board with a Pomodoro timer, letting users organize tasks, manage images, and focus through cycles.
@@ -19,7 +17,7 @@ It blends a drag-and-drop task board with a Pomodoro timer, letting users organi
 - Filter tasks by custom emoji-supported categories
 - Pomodoro timer with automatic cycles and sound cues
 - "Done" tasks appear with strike-through for clarity
-- Fully responsive and interactive front-end built with React
+- Interactive front-end built with React
 
 ---
 
@@ -88,16 +86,8 @@ npm install
 mysql -u youruser -p yourdb < exported-db.sql
 ```
 
-- Update your credentials in `db.js`:
+- The db.js is configured for local MySQL with root/root, but feel free to adjust these settings based on your environment. Use the included exported-db.sql to recreate the database schema and test data."
 
-```js
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'youruser',
-  password: 'yourpassword',
-  database: 'yourdb'
-});
-```
 
 - Start the backend:
 
@@ -110,7 +100,7 @@ npm run dev
 ### 2. Set up the Frontend
 
 ```bash
-cd ../web
+cd web
 npm install
 npm run dev
 ```
@@ -119,22 +109,7 @@ npm run dev
 
 ---
 
-## ✅ Assignment Requirements
 
-| Requirement                                 | Met |
-|--------------------------------------------|-----|
-| Two tables (tasks, categories)             | ✅  |
-| CRUD operations for tasks                  | ✅  |
-| Image file upload & preview                | ✅  |
-| Category filtering                         | ✅  |
-| Display all entries + single entry logic   | ✅  |
-| Add, edit, delete UI components            | ✅  |
-| Express routers organized in `routers/`    | ✅  |
-| SQL export provided                        | ✅  |
-| GitHub tracking from start                 | ✅  |
-| Fully commented code                       | ✅  |
-
----
 
 
 
