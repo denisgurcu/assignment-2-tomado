@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './EditTaskModal.css';
 import { FaChevronDown, FaTrash } from 'react-icons/fa';
 
+// this modal is for users to edit an existing task
 export default function EditTaskModal({ isOpen, onClose, task, onUpdate }) {
   const [title, setTitle] = useState(task.title || '');
   const [description, setDescription] = useState(task.description || '');
@@ -9,7 +10,8 @@ export default function EditTaskModal({ isOpen, onClose, task, onUpdate }) {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(task.image ? `http://localhost:3000/uploads/${task.image}` : null);
   const [categories, setCategories] = useState([]);
-  // Track if image was removed
+
+  // this tells us if the user removed the image (so we can update the backend accordingly)
 const [removeImage, setRemoveImage] = useState(false);
 
 
@@ -18,11 +20,12 @@ const [removeImage, setRemoveImage] = useState(false);
       fetch('http://localhost:3000/categories')
         .then(res => res.json())
         .then(data => setCategories(data));
-        setRemoveImage(false); // ✅ Reset image removal state
+        setRemoveImage(false); // Reset image removal state
 
     }
   }, [isOpen]);
 
+    // if user uploads a new file, generate a preview for it (so they can also delete it from this modal too if they want to)
   useEffect(() => {
     if (!file) return;
     const reader = new FileReader();
@@ -34,6 +37,7 @@ const [removeImage, setRemoveImage] = useState(false);
     e.preventDefault();
     if (!title) return;
   
+    //  formdata for uploading a file
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
@@ -45,7 +49,7 @@ const [removeImage, setRemoveImage] = useState(false);
     }
   
     if (removeImage) {
-      formData.append('remove_image', 'true');
+      formData.append('remove_image', 'true'); // tells backend to remove existing image
     }
   
     const res = await fetch(`http://localhost:3000/tasks/${task.id}`, {
@@ -56,7 +60,7 @@ const [removeImage, setRemoveImage] = useState(false);
     const data = await res.json();
   
     if (res.ok) {
-      onUpdate();
+      onUpdate(); // refresh data in parent 
     } else {
       alert('Update failed: ' + (data?.message || 'Unknown error'));
     }

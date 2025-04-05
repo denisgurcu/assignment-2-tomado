@@ -10,10 +10,24 @@
   .board-title {
     font-size: 2rem;
     font-weight: bold;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     font-family: var(--font-helvetica);
     color: var(--softgrey);
     text-align: left;
+  }
+
+  .board-subtitle {
+    font-size: 1.3rem;
+    padding: 2rem 0;
+    color: var(--softgrey);
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+    max-width: 90%;
+  }
+  
+  .highlight {
+    color: var(--yellow);
+    font-weight: bold;
   }
   
   .board-columns {
@@ -81,7 +95,7 @@
 
   .new-task:hover {
     transform: scale(1.09);
-    color: var(--black); /* optional: subtle feedback */
+    color: var(--black); 
   }
   
   

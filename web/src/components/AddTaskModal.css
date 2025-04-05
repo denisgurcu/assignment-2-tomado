@@ -204,7 +204,7 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
-/* 🧼 Badge-style delete button */
+/*  delete button */
 .remove-image-btn {
   position: absolute;
   top: 8px;

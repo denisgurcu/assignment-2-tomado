@@ -3,14 +3,16 @@ import { useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
 import { FaPen, FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 
+// This component lets users manage categories: add, edit, or delete them
 export default function CategoryManagerModal({ isOpen, onClose, categories, onCategoryChange, onCategoryDeleted }) {
-  const [newCategory, setNewCategory] = useState({ name: '', emoji: '' });
+  const [newCategory, setNewCategory] = useState({ name: '', emoji: '' }); // For new category form
   const [editingCategory, setEditingCategory] = useState(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
-  const [pickerTarget, setPickerTarget] = useState(null); // 'new' or category.id
+  const [pickerTarget, setPickerTarget] = useState(null); // Controls emoji picker visibility
 
   if (!isOpen) return null;
 
+  // Add a new category to the backend
   const handleAdd = async () => {
     if (!newCategory.name) return;
 
@@ -20,12 +22,14 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
       body: JSON.stringify(newCategory)
     });
 
+    // Reset state after adding
     setNewCategory({ name: '', emoji: '' });
     setIsAddingNew(false);
     setPickerTarget(null);
-    onCategoryChange();
+    onCategoryChange();  // refresh the list
   };
 
+  // Update an existing category
   const handleEdit = async () => {
     await fetch(`http://localhost:3000/categories/${editingCategory.id}`, {
       method: 'PUT',
@@ -35,9 +39,10 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
 
     setEditingCategory(null);
     setPickerTarget(null);
-    onCategoryChange();
+    onCategoryChange(); // refresh the list
   };
 
+  // delete a category from the backend (this won't delete the task)
   const handleDelete = async (id) => {
     if (!confirm('The category will be deleted, but related tasks will remain. Are you sure?')) return;
 

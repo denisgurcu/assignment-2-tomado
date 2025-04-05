@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+// this is for drag an drop
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import TaskCard from './TaskCard';
 import CategoryFilter from './CategoryFilter';
@@ -8,6 +9,7 @@ import EditTaskModal from './EditTaskModal';
 import CategoryManagerModal from './CategoryManagerModal';
 import './TaskBoard.css';
 
+// setting up the structure for your 3 columns on the board
 const initialColumns = {
   not_started: { name: 'Not Started', color: 'var(--orange)', items: [] },
   in_progress: { name: 'In Progress', color: 'var(--yellow)', items: [] },
@@ -15,6 +17,7 @@ const initialColumns = {
 };
 
 export default function TaskBoard() {
+  // states for managing tasks, categories, modals etc.
   const [columns, setColumns] = useState(initialColumns);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -25,6 +28,7 @@ export default function TaskBoard() {
   const [editModalOpen, setEditModalOpen] = useState(false);
 
 
+  // Get all tasks from the backend and put them into the right column
   const fetchTasks = () => {
     axios.get('http://localhost:3000/tasks')
       .then(res => {
@@ -41,6 +45,8 @@ export default function TaskBoard() {
           if (!freshColumns[status]) {
             freshColumns[status] = { name: status, color: 'gray', items: [] };
           }
+
+          // Organize each task under its column
           freshColumns[status].items.push({
             id: task.id, //  keep it numeric
             title: task.title,
@@ -58,7 +64,7 @@ export default function TaskBoard() {
       .catch(err => console.error('Error fetching tasks:', err));
   };
 
-
+  // get categories from the backend
   const fetchCategories = () => {
     axios.get('http://localhost:3000/categories')
       .then(res => setCategories(res.data))
@@ -70,6 +76,7 @@ export default function TaskBoard() {
     fetchCategories();
   }, []);
 
+  // this handles what happens when you drag and drop a task
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
@@ -77,6 +84,7 @@ export default function TaskBoard() {
       return;
     }
 
+    // move the task in the frontend
     const sourceCol = columns[source.droppableId];
     const destCol = columns[destination.droppableId];
     const sourceItems = [...sourceCol.items];
@@ -91,7 +99,7 @@ export default function TaskBoard() {
       [destination.droppableId]: { ...destCol, items: destItems }
     });
 
-    // ✅ Send status update to backend
+    // update the task status in the backend as well
     axios.put(`http://localhost:3000/tasks/${movedItem.id}`, {
       title: movedItem.title,
       description: movedItem.description,
@@ -103,11 +111,12 @@ export default function TaskBoard() {
     });
   };
 
+  // delete a task on the board itself both from frontend and backend
   const handleDelete = (taskId) => {
-    const numericId = parseInt(taskId); // 🧼 ensure it's a number
+    const numericId = parseInt(taskId); // 
     axios.delete(`http://localhost:3000/tasks/${numericId}`)
       .then(() => {
-        fetchTasks(); // ✅ Refresh from backend
+        fetchTasks(); // Refresh from backend
       })
       .catch((err) => {
         console.error('Error deleting task:', err);
@@ -119,6 +128,9 @@ export default function TaskBoard() {
   return (
     <div className="task-board">
       <h2 className="board-title">TO-DO LIST</h2>
+      <p className="board-subtitle">
+  Add tasks, attach images, assign categories, and <span className="highlight">drag</span> & <span className="highlight">drop</span> them as you move forward. You can also filter, add, delete, and customize categories to keep things organized your way.
+</p>
 
       <CategoryFilter
         categories={categories}
@@ -151,8 +163,8 @@ export default function TaskBoard() {
                       .filter(item => selectedCategory === 'All' || item.category === selectedCategory)
                       .map((item, index) => (
                         <Draggable
-                          key={item.id} // ✅ key is just the number
-                          draggableId={`task-${item.id}`} // ✅ DnD still gets a string
+                          key={item.id} 
+                          draggableId={`task-${item.id}`} 
                           index={index}
                         >
                           {(provided) => (
@@ -187,7 +199,7 @@ export default function TaskBoard() {
             </Droppable>
           ))}
 
-          {/* ✅ Place the Edit Modal OUTSIDE the map */}
+          {/* Edit Modal OUTSIDE the map */}
           {editModalOpen && selectedTask && (
             <EditTaskModal
               isOpen={editModalOpen}

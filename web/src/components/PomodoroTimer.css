@@ -96,7 +96,7 @@
     cursor: pointer;
     transition: transform 0.3s ease;
     position: relative;
-    top: -6px; /* 👈 nudges it up a little */
+    top: -6px;
   }
   
   .reset-btn:hover {

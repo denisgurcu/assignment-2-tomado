@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   z-index: 100;
-  overflow: auto; /* allow scrolling if content overflows */
+  overflow: auto; 
 }
 
 
@@ -124,7 +124,7 @@
 
 .new-category-btn:hover {
   transform: scale(1.09);
-  color: var(--softgrey); /* keep the same color on hover */
+  color: var(--softgrey);
 }
 
 .emoji-btn {
@@ -159,7 +159,7 @@
 }
 .emoji-popover {
   position: absolute;
-  top: calc(100% + 8px); /* directly below the emoji button */
+  top: calc(100% + 8px); 
   left: 0;
   z-index: 999;
   background: #1f1f1f;

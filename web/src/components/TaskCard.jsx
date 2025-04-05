@@ -1,14 +1,17 @@
 import './TaskCard.css';
 import { FaTrash, FaPen } from 'react-icons/fa';
 
+// this component is for individual task card on the board
 export default function TaskCard({ task, onDelete, onEdit }) {
+    // my debug attempts couldn't get the image to show up for a long while
   console.log("Task data:", task);
   console.log("Image filename:", task.image);
 
   return (
-    <div className="task-card">
+    // if the task is dropped to done, strikethrough it
+    <div className={`task-card ${task.status === 'done' ? 'done' : ''}`}>
       <div className="task-controls">
-      <button
+        <button
           className="edit-btn"
           onClick={onEdit}
           aria-label="Edit task"
@@ -33,6 +36,7 @@ export default function TaskCard({ task, onDelete, onEdit }) {
         </>
       )}
 
+      {/* if an image exists display it */}
       {task.image && (
         <>
           <img
@@ -40,10 +44,10 @@ export default function TaskCard({ task, onDelete, onEdit }) {
             alt={task.title}
             className="task-image"
           />
-<hr className="divider" />
+          <hr className="divider" />
         </>
       )}
-
+      {/* if the task has a category, show it*/}
       {task.category && (
         <span className="category-pill">
           {task.category_emoji} {task.category}

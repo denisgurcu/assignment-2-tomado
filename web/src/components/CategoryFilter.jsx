@@ -1,6 +1,7 @@
 import './CategoryFilter.css';
 import { FaPen, FaTrash } from 'react-icons/fa';
 
+// this component shows the list of category pills and a button to edit them
 export default function CategoryFilter({ categories, selected, onSelect, onManageClick }) {
   return (
     <div className="category-filter-container">
