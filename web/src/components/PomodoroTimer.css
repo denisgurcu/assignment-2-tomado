@@ -107,7 +107,7 @@
   .cycle-indicator {
     display: flex;
     justify-content: center;
-    gap: 0.3rem;
+    gap: 0.6rem;
     margin-top: 1.5rem;
   }
   
@@ -137,13 +137,4 @@
   .dot.breathing {
     animation: breathe 2.5s ease-in-out infinite;
   }
-  
-  .manual-note {
-    font-size: 0.85rem;
-    color: var(--middlegray);
-    margin-top: 0.5rem;
-    font-style: italic;
-    text-align: center;
-  }
-  
   

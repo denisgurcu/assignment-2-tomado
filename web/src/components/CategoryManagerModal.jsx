@@ -1,7 +1,7 @@
 import './CategoryManagerModal.css';
 import { useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
-import { FaPen, FaTrash } from 'react-icons/fa';
+import { FaPen, FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 
 export default function CategoryManagerModal({ isOpen, onClose, categories, onCategoryChange, onCategoryDeleted }) {
   const [newCategory, setNewCategory] = useState({ name: '', emoji: '' });
@@ -39,7 +39,7 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this category?')) return;
+    if (!confirm('The category will be deleted, but related tasks will remain. Are you sure?')) return;
 
     await fetch(`http://localhost:3000/categories/${id}`, {
       method: 'DELETE'
@@ -60,6 +60,8 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
             <li key={cat.id} className="category-item">
               {editingCategory?.id === cat.id ? (
                 <>
+                    {/* Edit form UI */}
+
                   <input
                     type="text"
                     value={`${editingCategory.emoji || ''} ${editingCategory.name}`}
@@ -72,10 +74,10 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
                   <div className="emoji-picker-row">
                     <button
                       type="button"
-                      className="emoji-btn"
+                      className={`emoji-btn ${pickerTarget === cat.id ? 'active' : ''}`}
                       onClick={() => setPickerTarget(pickerTarget === cat.id ? null : cat.id)}
                     >
-                      {editingCategory.emoji || '😀'} Pick Emoji
+                      {editingCategory.emoji || '♥️'} Pick Emoji
                     </button>
                     {pickerTarget === cat.id && (
                       <div className="emoji-popover">
@@ -88,11 +90,15 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
                       </div>
                     )}
                   </div>
-                  <button className="icon-btn" onClick={handleEdit}>✅</button>
+                  <button className="icon-btn confirm" onClick={handleEdit}>
+                    <FaCheck size={16} />
+                  </button>
                   <button className="icon-btn cancel" onClick={() => {
                     setEditingCategory(null);
                     setPickerTarget(null);
-                  }}>✖️</button>
+                  }}>
+                    <FaTimes size={16} />
+                  </button>
                 </>
               ) : (
                 <>
@@ -112,6 +118,8 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
 
           {isAddingNew ? (
             <li className="category-item">
+                  {/* New category form */}
+
               <input
                 type="text"
                 placeholder="New category name"
@@ -126,11 +134,12 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
               <div className="emoji-picker-row">
                 <button
                   type="button"
-                  className="emoji-btn"
+                  className={`emoji-btn ${pickerTarget === 'new' ? 'active' : ''}`}
                   onClick={() => setPickerTarget(pickerTarget === 'new' ? null : 'new')}
                 >
-                  {newCategory.emoji || '😀'} Pick Emoji
+                  {newCategory.emoji || '♥️'} Pick Emoji
                 </button>
+
                 {pickerTarget === 'new' && (
                   <div className="emoji-popover">
                     <EmojiPicker
@@ -143,7 +152,9 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
                   </div>
                 )}
               </div>
-              <button className="icon-btn" onClick={handleAdd}>✅</button>
+              <button className="icon-btn confirm" onClick={handleAdd}>
+                <FaCheck size={16} />
+              </button>
               <button
                 className="icon-btn cancel"
                 onClick={() => {
@@ -152,13 +163,14 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
                   setPickerTarget(null);
                 }}
               >
-                ✖️
+                <FaTimes size={16} />
               </button>
+
             </li>
           ) : (
             <li>
               <button
-                className="pill new-category-btn"
+                className="new-category-btn"
                 onClick={() => setIsAddingNew(true)}
               >
                 + New

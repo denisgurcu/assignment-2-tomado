@@ -1,15 +1,15 @@
 .task-card {
-    background-color: #1f1f1f;
-    padding: 0.75rem 1rem;
-    border-radius: 1rem;
-    color: white;
-    font-family: var(--font-mono);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+  background-color: var(--black);
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  color: white;
+  font-family: var(--font-mono);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem; /* add light global spacing between children */
+}
   
   .task-top {
     display: flex;
@@ -17,27 +17,99 @@
     align-items: center;
   }
   
-  .delete-btn {
-    background: none;
-    border: none;
-    color: var(--orange);
-    font-size: 1.2rem;
-    cursor: pointer;
+  .task-title {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
   }
   
-  .category-label {
-    display: inline-block;
-    font-size: 0.75rem;
-    background-color: var(--middlegray);
-    color: var(--black);
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.5rem;
-    width: fit-content;
+  .task-description {
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    color: var(--softgrey);
+    margin: 0.3rem 0;
   }
+  .task-controls {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .trash-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .trash-btn:hover {
+    transform: scale(1.15);
+    color: var(--orange);
+  }
+
+  .edit-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-right: 0.75rem;
+    transition: transform 0.2s ease;
+  }
+  
+  .edit-btn:hover {
+    transform: scale(1.15);
+    color: var(--yellow);
+  }
+  
+  
+  .divider {
+    border: none;
+    border-top: 1px solid var(--middlegray);
+    margin: 0.3rem 0;
+    opacity: 0.3;
+  }
+  
+  
+/* Category pill */
+.category-pill {
+  background: none;
+  border: 1px solid var(--middlegray);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: var(--softgrey);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+  width: fit-content;
+  white-space: nowrap;
+  pointer-events: none; /* disables hover + click */
+}
+
+
+.left-aligned {
+  align-self: flex-start;
+  margin-left: 0;
+}
+
+.emoji {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+  
   .task-image {
     width: 100%;
-    max-height: 150px;
-    object-fit: cover;
+    max-height: 250px;
+    object-fit: contain;
+    object-position: left;
     border-radius: 0.75rem;
+    margin-bottom: 0.5rem;
   }
   

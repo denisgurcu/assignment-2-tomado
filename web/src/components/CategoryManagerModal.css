@@ -36,6 +36,12 @@
   color: var(--orange);
   font-size: 3rem;
   cursor: pointer;
+  transition: transform 0.25s ease; 
+  
+}
+
+.close-btn:hover {
+  transform: scale(1.09); 
 }
 
 .category-list {
@@ -83,25 +89,67 @@
   border: none;
   padding: 0.25rem;
   cursor: pointer;
+  transition: transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  transform: scale(1.15); 
+}
+
+.icon-btn.confirm {
   color: white;
 }
 
-.category-list .icon-btn:hover {
-  transform: scale(1.1);
+.icon-btn.cancel {
+  color: var(--orange) ;
 }
 
 
+.new-category-btn {
+  background: none;
+  color: var(--softgrey);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  display: block; 
+  margin: 0 auto;
+  border: none;
+  transition: transform 0.25s ease;
+  will-change: transform; 
+}
 
-/* Emoji Button Row */
+.new-category-btn:hover {
+  transform: scale(1.09);
+  color: var(--softgrey); /* keep the same color on hover */
+}
+
 .emoji-btn {
-  background: var(--softgrey);
-  color: black;
-  padding: 0.45rem 0.9rem;
+  background: var(--blue);
+  color: white;
+  padding: 0.5rem 1rem;
   border-radius: 999px;
   border: none;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
+  font-family: var(--font-mono);
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.emoji-btn:hover {
+  background: var(--yellow);
+  color: var(--black);
+}
+.emoji-btn.active {
+  background: var(--yellow);
+  color: var(--black);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3),
+              0 0 0 3px var(--softgrey);
+  transform: scale(0.97);
 }
 
 .emoji-picker-row {
@@ -149,5 +197,9 @@
 .EmojiPickerReact input.epr-search {
   font-size: 1rem !important;
   color: white !important;
+}
+
+.epr_i3a6gx {
+  background-image: none !important;
 }
 

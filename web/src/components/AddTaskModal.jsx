@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import './AddTaskModal.css';
+import { FaChevronDown, FaTrash } from 'react-icons/fa';
+
 
 export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) {
   const [title, setTitle] = useState('');
@@ -27,11 +29,11 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title) return;
-    
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
-    formData.append('category_id', categoryId || '');    formData.append('status', currentColumn);
+    formData.append('category_id', categoryId || ''); formData.append('status', currentColumn);
     if (file) formData.append('file', file);
 
     try {
@@ -64,9 +66,9 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
     <div className="modal-overlay">
       <div className="modal-box">
         <button className="close-btn" onClick={onClose}>×</button>
-        <h3>Add New Task</h3>
+        <h3>ADD NEW TASK</h3>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="title">Task Title:</label>
+          <label htmlFor="title">Title:</label>
           <input
             id="title"
             type="text"
@@ -79,7 +81,7 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
           <label htmlFor="description">Description:</label>
           <textarea
             id="description"
-            placeholder="Optional description"
+            placeholder="Enter task description (optional)"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -91,12 +93,16 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
             >
-<option value="">No Category</option>
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              <option value="">No Category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
               ))}
             </select>
+            <FaChevronDown className="select-arrow" />
           </div>
+
 
           <label htmlFor="file" className="file-upload">
             Upload Image (optional)
@@ -108,8 +114,23 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
             />
           </label>
 
-          {preview && <img src={preview} alt="Preview" className="image-preview" />}
+          {preview && (
+            <div className="image-preview-container">
+              <img src={preview} alt="Preview" className="image-preview" />
+              <button
+                type="button"
+                className="remove-image-btn"
+                onClick={() => {
+                  setFile(null);
+                  setPreview(null);
+                }}
+                aria-label="Remove uploaded image"
+              >
+                <FaTrash size={12} />
+              </button>
 
+            </div>
+          )}
           <div className="modal-actions">
             <button type="submit">Add Task</button>
           </div>

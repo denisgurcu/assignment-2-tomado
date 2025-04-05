@@ -1,4 +1,5 @@
 import './CategoryFilter.css';
+import { FaPen, FaTrash } from 'react-icons/fa';
 
 export default function CategoryFilter({ categories, selected, onSelect, onManageClick }) {
   return (
@@ -10,17 +11,20 @@ export default function CategoryFilter({ categories, selected, onSelect, onManag
             All
           </button>
           {categories.map(cat => (
-            <button
-              key={cat.id}
-              className={`pill ${selected === cat.name ? 'active' : ''}`}
-              onClick={() => onSelect(cat.name)}
-            >
-              {cat.emoji ? `${cat.emoji} ` : ''}{cat.name}
-            </button>
-          ))}
+  <button
+    key={cat.id}
+    className={`pill ${selected === cat.name ? 'active' : ''}`}
+    onClick={() => onSelect(cat.name)}
+  >
+    {cat.emoji && <span className="emoji">{cat.emoji}</span>} {cat.name}
+  </button>
+))}
         </div>
       </div>
-      <button className="pill-icon manage-btn" title="Manage Categories" onClick={onManageClick}>→</button>
+      <button className="pill-icon manage-btn" title="Manage Categories" onClick={onManageClick}>
+  <FaPen size={30} color="#ffffff" />
+</button>
+
     </div>
   );
 }

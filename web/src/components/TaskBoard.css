@@ -10,7 +10,7 @@
   .board-title {
     font-size: 2rem;
     font-weight: bold;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
     font-family: var(--font-helvetica);
     color: var(--softgrey);
     text-align: left;
@@ -24,7 +24,7 @@
   }
   
   .column {
-    background-color: #2a2a2a;
+    background-color: var(--middlegray);
     border-radius: 1.5rem;
     padding: 1rem;
     flex: 1;
@@ -42,7 +42,7 @@
     font-size: 1.1rem;
     font-weight: 600;
     margin: 0;
-    color: white;
+    color: var(--black);
   }
   
   .dot {
@@ -68,10 +68,20 @@
   
   .new-task {
     margin-top: 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
     background: none;
-    color: var(--middlegray);
+    color: var(--darkergrey);
     border: none;
-    font-size: 0.9rem;
+    transition: transform 0.25s ease, color 0.25s ease;
+    will-change: transform; 
     cursor: pointer;
   }
+
+  .new-task:hover {
+    transform: scale(1.09);
+    color: var(--black); /* optional: subtle feedback */
+  }
+  
   

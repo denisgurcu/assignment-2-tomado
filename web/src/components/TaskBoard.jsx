@@ -4,6 +4,7 @@ import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import TaskCard from './TaskCard';
 import CategoryFilter from './CategoryFilter';
 import AddTaskModal from './AddTaskModal';
+import EditTaskModal from './EditTaskModal';
 import CategoryManagerModal from './CategoryManagerModal';
 import './TaskBoard.css';
 
@@ -20,6 +21,9 @@ export default function TaskBoard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [activeColumn, setActiveColumn] = useState('not_started');
   const [showCategoryManager, setShowCategoryManager] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+
 
   const fetchTasks = () => {
     axios.get('http://localhost:3000/tasks')
@@ -68,11 +72,11 @@ export default function TaskBoard() {
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
-  
+
     if (!destination || (source.droppableId === destination.droppableId && source.index === destination.index)) {
       return;
     }
-  
+
     const sourceCol = columns[source.droppableId];
     const destCol = columns[destination.droppableId];
     const sourceItems = [...sourceCol.items];
@@ -80,13 +84,13 @@ export default function TaskBoard() {
     const [movedItem] = sourceItems.splice(source.index, 1);
     movedItem.status = destination.droppableId;
     destItems.splice(destination.index, 0, movedItem);
-  
+
     setColumns({
       ...columns,
       [source.droppableId]: { ...sourceCol, items: sourceItems },
       [destination.droppableId]: { ...destCol, items: destItems }
     });
-  
+
     // ✅ Send status update to backend
     axios.put(`http://localhost:3000/tasks/${movedItem.id}`, {
       title: movedItem.title,
@@ -114,7 +118,7 @@ export default function TaskBoard() {
 
   return (
     <div className="task-board">
-      <h2 className="board-title">To-Do</h2>
+      <h2 className="board-title">TO-DO LIST</h2>
 
       <CategoryFilter
         categories={categories}
@@ -157,7 +161,15 @@ export default function TaskBoard() {
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                             >
-                              <TaskCard task={item} onDelete={() => handleDelete(item.id)} />
+                              <TaskCard
+                                task={item}
+                                onDelete={() => handleDelete(item.id)}
+                                onEdit={() => {
+                                  setSelectedTask(item);
+                                  setEditModalOpen(true);
+                                }}
+                              />
+
                             </div>
                           )}
                         </Draggable>
@@ -170,8 +182,23 @@ export default function TaskBoard() {
                   </div>
                 </div>
               )}
+
+
             </Droppable>
           ))}
+
+          {/* ✅ Place the Edit Modal OUTSIDE the map */}
+          {editModalOpen && selectedTask && (
+            <EditTaskModal
+              isOpen={editModalOpen}
+              onClose={() => setEditModalOpen(false)}
+              task={selectedTask}
+              onUpdate={() => {
+                fetchTasks();
+                setEditModalOpen(false);
+              }}
+            />
+          )}
         </div>
       </DragDropContext>
 

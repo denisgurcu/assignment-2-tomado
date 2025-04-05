@@ -70,19 +70,22 @@ tasksRouter.post('/', upload.single('file'), (req, res) => {
 
 // Update task (optional file)
 tasksRouter.put('/:id', upload.single('file'), (req, res) => {
-  const { title, description, category_id, status } = req.body;
+  const { title, description, category_id, status, remove_image } = req.body;
   const { id } = req.params;
 
   let sql = `
     UPDATE tasks 
     SET title = ?, description = ?, category_id = ?, status = ?
   `;
-
   const params = [title, description, category_id, status];
 
   if (req.file) {
+    // If a new file is uploaded, update it
     sql += `, file_name = ?`;
     params.push(req.file.filename);
+  } else if (remove_image === 'true') {
+    // If image is removed from the modal
+    sql += `, file_name = NULL`;
   }
 
   sql += ` WHERE id = ? LIMIT 1`;
@@ -97,6 +100,7 @@ tasksRouter.put('/:id', upload.single('file'), (req, res) => {
     res.json({ message: 'Task updated successfully' });
   });
 });
+
 
 // Delete task
 tasksRouter.delete('/:id', (req, res) => {

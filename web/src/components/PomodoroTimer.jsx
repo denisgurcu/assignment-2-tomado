@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import './PomodoroTimer.css';
 
 const modes = {
-  focus: 5,   // 25 minutes (remove * 60 and change to 5 for testing)
-  short: 3,    //  5 minutes (remove * 60 and  change to 3 for testing)
-  long: 7     // 15 minutes (remove * 60 and  change to 7 for testing)
+  focus: 25 * 60,   // 25 minutes (remove * 60 and change to 5 for testing)
+  short: 5 * 60,   //  5 minutes (remove * 60 and  change to 3 for testing)
+  long: 15 * 60     // 15 minutes (remove * 60 and  change to 7 for testing)
 };
 
 export default function PomodoroTimer() {
@@ -13,7 +13,6 @@ export default function PomodoroTimer() {
   const [isRunning, setIsRunning] = useState(false);
   const [cycleCount, setCycleCount] = useState(0);
   const [hasCompletedCycle, setHasCompletedCycle] = useState(false);
-  const [isManual, setIsManual] = useState(false); // NEW: Track manual mode override
 
   // Countdown interval
   useEffect(() => {
@@ -67,13 +66,11 @@ export default function PomodoroTimer() {
           bell2.play().catch(e => console.warn('Bell 2 failed:', e));
         }, 600);
 
-        // ✅ Reset everything to default Focus mode
         setMode('focus');
         setSeconds(modes['focus']);
         setIsRunning(false);
         setCycleCount(0);
         setHasCompletedCycle(true);
-        setIsManual(false);
       }
     }
   }, [seconds]);
@@ -88,7 +85,9 @@ export default function PomodoroTimer() {
           className={mode === 'focus' ? 'active' : ''}
           onClick={() => {
             setMode('focus');
-            setIsManual(false); // ✅ Resume cycle logic
+            setIsRunning(false);
+            setCycleCount(0);
+            setHasCompletedCycle(false);
           }}
         >
           Focus
@@ -97,7 +96,9 @@ export default function PomodoroTimer() {
           className={mode === 'short' ? 'active' : ''}
           onClick={() => {
             setMode('short');
-            setIsManual(true); // ✅ Manual override
+            setIsRunning(false);
+            setCycleCount(0);
+            setHasCompletedCycle(false);
           }}
         >
           Short Break
@@ -106,7 +107,9 @@ export default function PomodoroTimer() {
           className={mode === 'long' ? 'active' : ''}
           onClick={() => {
             setMode('long');
-            setIsManual(true);
+            setIsRunning(false);
+            setCycleCount(0);
+            setHasCompletedCycle(false);
           }}
         >
           Long Break
@@ -118,15 +121,11 @@ export default function PomodoroTimer() {
           <span
             key={i}
             className={`dot ${i < cycleCount % 4 ? 'active' : ''} ${
-              !isManual && i === cycleCount % 4 && isRunning && !hasCompletedCycle ? 'breathing' : ''
+              i === cycleCount % 4 && isRunning && !hasCompletedCycle ? 'breathing' : ''
             }`}
           />
         ))}
       </div>
-
-      {isManual && (
-        <p className="manual-note">Manual mode: cycle progress is paused.</p>
-      )}
 
       <h1>{format(seconds)}</h1>
       <div className="timer-controls">
@@ -138,7 +137,6 @@ export default function PomodoroTimer() {
               setCycleCount(0);
               setHasCompletedCycle(false);
               setSeconds(modes['focus']);
-              setIsManual(false);
             }
             setIsRunning(prev => !prev);
           }}
