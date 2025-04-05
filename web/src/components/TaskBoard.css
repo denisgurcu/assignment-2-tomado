@@ -1,6 +1,10 @@
 .task-board {
-    width: 100%;
-    max-width: 1200px;
+  width: 100%;
+  max-width: 1200px;
+    margin-bottom: 5rem;
+    background-color:var(--black);
+    padding: 5rem;
+    border-radius: 10rem;
   }
   
   .board-title {
@@ -13,9 +17,10 @@
   }
   
   .board-columns {
-    display: flex;
-    gap: 2rem;
-    justify-content: space-between;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   }
   
   .column {

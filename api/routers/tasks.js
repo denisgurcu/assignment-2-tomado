@@ -1,16 +1,18 @@
 const express = require('express');
 const db = require('../db');
-const upload = require('../storage');
+const multer = require('multer');
+const storage = require('../storage');
+const upload = multer({ storage });
 
 const tasksRouter = express.Router();
 
 // Get all tasks (with category name)
 tasksRouter.get('/', (req, res) => {
   const sql = `
-    SELECT tasks.*, categories.name AS category_name 
-    FROM tasks 
-    JOIN categories ON tasks.category_id = categories.id
-    ORDER BY tasks.created_at DESC
+  SELECT tasks.*, categories.name AS category_name,   categories.emoji AS category_emoji
+  FROM tasks 
+  LEFT JOIN categories ON tasks.category_id = categories.id
+  ORDER BY tasks.created_at DESC
   `;
 
   db.query(sql, (err, results) => {
@@ -28,8 +30,8 @@ tasksRouter.get('/:id', (req, res) => {
   const { id } = req.params;
 
   const sql = `
-    SELECT tasks.*, categories.name AS category_name 
-    FROM tasks 
+  SELECT tasks.*, categories.name AS category_name, categories.emoji
+  FROM tasks 
     JOIN categories ON tasks.category_id = categories.id
     WHERE tasks.id = ?
   `;
@@ -46,7 +48,9 @@ tasksRouter.get('/:id', (req, res) => {
 
 // Add a new task (with optional file)
 tasksRouter.post('/', upload.single('file'), (req, res) => {
-  const { title, description, category_id, status } = req.body;
+  let { title, description, category_id, status } = req.body;
+  if (!category_id) category_id = null;
+  
   const file_name = req.file ? req.file.filename : null;
 
   const sql = `

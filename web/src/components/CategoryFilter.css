@@ -1,39 +1,96 @@
-.category-filter {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-    font-family: var(--font-helvetica);
-    color: var(--softgrey);
-  }
-  
-  .pill {
-    background: none;
-    border: 1px solid var(--middlegray);
-    border-radius: 999px;
-    padding: 0.3rem 0.9rem;
-    font-size: 0.85rem;
-    color: var(--softgrey);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .pill:hover {
-    background: var(--middlegray);
-    color: var(--black);
-  }
-  
-  .pill.active {
-    background: var(--yellow);
-    color: var(--black);
-    font-weight: bold;
-    border-color: transparent;
-    box-shadow: 0 0 0 2px var(--softgrey);
-  }
-  
-  .pill.add {
-    font-weight: bold;
-    padding-inline: 0.7rem;
-  }
-  
+.category-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* The wide pill-like bar */
+.category-filter-wrapper {
+  flex: 1;
+  background:var(--darkergrey);
+  border-radius: 2rem;
+  padding: 2rem 2rem;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+}
+
+/* Pills inside */
+.category-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.category-label {
+  font-size: 0.95rem;
+  margin-right: 0.5rem;
+  white-space: nowrap;
+}
+
+.pill {
+  background: none;
+  border: 1px solid var(--middlegray);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+  color: var(--softgrey);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.pill:hover {
+  background: var(--middlegray);
+  color: var(--black);
+}
+
+.pill.active {
+  background: var(--yellow);
+  color: var(--black);
+  font-weight: bold;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px var(--softgrey);
+}
+
+/* Folder button like the arrow button */
+.pill-icon.manage-btn {
+  font-size: 1.2rem;
+  border: none;
+  background: var(--blue);
+  border-radius: 2rem;
+  width: 6em;
+  height: 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.pill-icon.manage-btn:hover {
+  background: var(--yellow);
+  color: black;
+}
+.new-category-btn {
+  background: transparent;
+  border: none;
+  color: var(--middlegray);
+  padding: 1.2rem 1.2rem;
+  border-radius: 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+.new-category-btn:hover {
+  border-color: var(--yellow);
+  color: var(--yellow);
+}

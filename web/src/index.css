@@ -1,5 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
 
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;         /* 👈 better than fixed height */
+  width: 100%;
+  background-color: var(--middlegray);
+  font-family: var(--font-helvetica);
+  color: white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: auto;            /* 👈 prevent content cutoff */
+}
+
 
 :root {
   --blue: #0788EF;
@@ -9,6 +25,7 @@
   --softgrey: #E9E9E9;
   --middlegray: #BBBBBB;
   --darkgrey: #9A9A9A;
+  --darkergrey: #363636;
   --black: #202020;
 
     /* Font families */
@@ -17,13 +34,3 @@
 }
 
 
-body, html, #root {
-  margin: 0;
-  padding: 0;
-  background-color: var(--middlegray);
-  font-family: 'Helvetica Neue', sans-serif;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}

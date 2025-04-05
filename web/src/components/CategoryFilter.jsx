@@ -1,23 +1,26 @@
-
-// CategoryFilter.jsx
 import './CategoryFilter.css';
 
-const categories = ['All', 'Work', 'BCIT', 'Chores'];
-
-export default function CategoryFilter({ selected, onSelect }) {
+export default function CategoryFilter({ categories, selected, onSelect, onManageClick }) {
   return (
-    <div className="category-filter">
-      <span>Categories:</span>
-      {categories.map((cat) => (
-        <button
-          key={cat}
-          className={`pill ${selected === cat ? 'active' : ''}`}
-          onClick={() => onSelect(cat)}
-        >
-          {cat}
-        </button>
-      ))}
-      <button className="pill add">+</button>
+    <div className="category-filter-container">
+      <div className="category-filter-wrapper">
+        <div className="category-pills">
+          <span className="category-label">Categories:</span>
+          <button className={`pill ${selected === 'All' ? 'active' : ''}`} onClick={() => onSelect('All')}>
+            All
+          </button>
+          {categories.map(cat => (
+            <button
+              key={cat.id}
+              className={`pill ${selected === cat.name ? 'active' : ''}`}
+              onClick={() => onSelect(cat.name)}
+            >
+              {cat.emoji ? `${cat.emoji} ` : ''}{cat.name}
+            </button>
+          ))}
+        </div>
+      </div>
+      <button className="pill-icon manage-btn" title="Manage Categories" onClick={onManageClick}>→</button>
     </div>
   );
 }

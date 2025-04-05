@@ -1,0 +1,153 @@
+.category-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  overflow: auto; /* allow scrolling if content overflows */
+}
+
+
+.category-modal-box {
+
+    padding: 2rem;
+    max-width: 600px;
+    width: 100%;
+    background: #1f1f1f;
+    border-radius: 1.5rem;
+    position: relative;
+    color: white;
+    font-family: var(--font-helvetica);
+  }
+
+.category-item span {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--orange);
+  font-size: 3rem;
+  cursor: pointer;
+}
+
+.category-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.category-list .category-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #2a2a2a;
+  padding: 0.85rem 1.2rem;
+  border-radius: 1rem;
+  color: white;
+  font-size: 1rem;
+  position: relative;
+
+
+}
+
+.category-list input {
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--middlegray);
+  flex-grow: 1;
+  min-width: 0;
+  background-color: #1f1f1f;
+  color: white;
+}
+
+.category-list .actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.category-list .icon-btn {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: white;
+}
+
+.category-list .icon-btn:hover {
+  transform: scale(1.1);
+}
+
+
+
+/* Emoji Button Row */
+.emoji-btn {
+  background: var(--softgrey);
+  color: black;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.emoji-picker-row {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+}
+.emoji-popover {
+  position: absolute;
+  top: calc(100% + 8px); /* directly below the emoji button */
+  left: 0;
+  z-index: 999;
+  background: #1f1f1f;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+
+/* Emoji Picker Overrides */
+.EmojiPickerReact {
+  width: 400px !important;
+  --epr-bg-color: #1f1f1f;
+  --epr-text-color: #fff;
+  --epr-category-label-bg-color: #2a2a2a;
+  --epr-category-label-text-color: #aaa;
+  --epr-search-input-bg-color: #2a2a2a;
+  --epr-search-input-text-color: #fff;
+  --epr-highlight-color: var(--yellow);
+}
+
+.EmojiPickerReact .epr-category-nav {
+  display: none !important;
+}
+
+.EmojiPickerReact .epr-emoji {
+  background: transparent !important;
+  border-radius: 8px;
+}
+
+.EmojiPickerReact .epr-emoji:hover {
+  background-color: #333 !important;
+}
+
+.EmojiPickerReact input.epr-search {
+  font-size: 1rem !important;
+  color: white !important;
+}
+

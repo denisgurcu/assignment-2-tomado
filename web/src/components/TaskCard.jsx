@@ -10,7 +10,9 @@ export default function TaskCard({ task, onDelete }) {
       </div>
 
       {task.category && (
-        <span className="category-label">{task.category}</span>
+        <span className="category-label">
+          {task.category_emoji ? `${task.category_emoji} ` : ''}{task.category}
+        </span>
       )}
     </div>
   );
