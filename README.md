@@ -43,34 +43,6 @@ It blends a drag-and-drop task board with a Pomodoro timer, letting users organi
 
 ---
 
-## 📁 Project Structure
-
-```bash
-assignment-2/
-├── api/                        # Express backend
-│   ├── db.js                   # MySQL connection
-│   ├── index.js                # Entry point
-│   ├── storage.js              # Multer setup
-│   ├── exported-db.sql         # SQL schema + seed
-│   ├── uploads/                # Uploaded images
-│   └── routers/
-│       ├── tasks.js            # Task routes (CRUD + file upload)
-│       └── categories.js       # Category routes
-│
-└── web/                        # React frontend
-    ├── App.jsx
-    ├── main.jsx
-    └── components/
-        ├── TaskBoard.jsx
-        ├── TaskCard.jsx
-        ├── AddTaskModal.jsx
-        ├── EditTaskModal.jsx
-        ├── CategoryFilter.jsx
-        └── PomodoroTimer.jsx
-```
-
----
-
 ## ⚙️ How to Run Locally
 
 ### 1. Set up the Backend (API)
