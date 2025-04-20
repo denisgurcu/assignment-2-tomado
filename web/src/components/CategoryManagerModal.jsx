@@ -42,7 +42,7 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
     onCategoryChange(); // refresh the list
   };
 
-  // delete a category from the backend (this won't delete the task)
+  // Delete a category from the backend (this won't delete the tasks)
   const handleDelete = async (id) => {
     if (!confirm('The category will be deleted, but related tasks will remain. Are you sure?')) return;
 
@@ -65,8 +65,7 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
             <li key={cat.id} className="category-item">
               {editingCategory?.id === cat.id ? (
                 <>
-                    {/* Edit form UI */}
-
+                  {/* Edit form UI */}
                   <input
                     type="text"
                     value={`${editingCategory.emoji || ''} ${editingCategory.name}`}
@@ -123,8 +122,7 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
 
           {isAddingNew ? (
             <li className="category-item">
-                  {/* New category form */}
-
+              {/* New category form */}
               <input
                 type="text"
                 placeholder="New category name"
@@ -144,7 +142,6 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
                 >
                   {newCategory.emoji || '♥️'} Pick Emoji
                 </button>
-
                 {pickerTarget === 'new' && (
                   <div className="emoji-popover">
                     <EmojiPicker
@@ -170,7 +167,6 @@ export default function CategoryManagerModal({ isOpen, onClose, categories, onCa
               >
                 <FaTimes size={16} />
               </button>
-
             </li>
           ) : (
             <li>

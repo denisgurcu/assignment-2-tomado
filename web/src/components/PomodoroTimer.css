@@ -6,7 +6,7 @@
     width: 100%;
     max-width: 1200px;
     margin-top: 2rem; /* 👈 Add this */
-
+    margin-bottom: 2rem; /* 👈 Add this */
   }
   
   .pomodoro h1 {

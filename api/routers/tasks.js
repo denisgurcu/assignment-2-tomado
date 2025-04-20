@@ -1,129 +1,153 @@
 const express = require('express');
-const db = require('../db');
-// Import multer to handle file uploads (like images)
 const multer = require('multer');
-// Use our custom storage for multer
-const storage = require('../storage');
-const upload = multer({ storage }); // this handles uploading 1 file at a time
+const fs = require('fs');
+const path = require('path');
+const authMiddleware = require('../middleware/auth');
+const router = express.Router();
+const db = require('../db');
 
-const tasksRouter = express.Router();
+// Configure multer for file uploads
+const upload = multer({ dest: 'uploads/' });
 
-// Get all tasks (with category name  + emoji if they have one - emoji is optional)
-tasksRouter.get('/', (req, res) => {
-  const sql = `
-  SELECT tasks.*, categories.name AS category_name,   categories.emoji AS category_emoji
-  FROM tasks 
-  LEFT JOIN categories ON tasks.category_id = categories.id
-  ORDER BY tasks.created_at DESC
-  `;
+// Validation middleware for task input
+const validateTaskInput = (req, res, next) => {
+  const { title, status } = req.body || {}; // Fallback to an empty object if req.body is undefined
 
-  // fetch tasks from the database
-  db.query(sql, (err, results) => {
-    if (err) {
-      console.error('Error fetching tasks:', err);
-      return res.status(500).send('Internal Server Error');
+  if (!title || !status) {
+    return res.status(400).json({ message: 'Title and status are required' });
+  }
+  next();
+};
+
+// Utility function to safely parse request data
+const parseRequestBody = (req) => {
+  try {
+    return req.body || {};
+  } catch (error) {
+    console.error('Error parsing request body:', error);
+    return {};
+  }
+};
+
+// Get all tasks for the authenticated user
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
-  // Send the list of tasks to the frontend
-    res.json(results);
-  });
+    const [tasks] = await db.query('SELECT * FROM tasks WHERE user_id = ?', [req.user.id]);
+    res.json(tasks);
+  } catch (error) {
+    console.error('Database error (GET /tasks):', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
-// Get single task by ID (including its category info)
-tasksRouter.get('/:id', (req, res) => {
-  const { id } = req.params;
-
-  const sql = `
-  SELECT tasks.*, categories.name AS category_name, categories.emoji
-  FROM tasks 
-    JOIN categories ON tasks.category_id = categories.id
-    WHERE tasks.id = ?
-  `;
-
-  db.query(sql, [id], (err, results) => {
-    if (err) {
-      console.error('Error fetching task by ID:', err);
-      return res.status(500).send('Internal Server Error');
+// Get a specific task by ID
+router.get('/:id', authMiddleware, async (req, res) => {
+  const taskId = req.params.id;
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    res.json(results[0]); // Send back just the one task
-  });
-});
-
-// Add a new task (with optional file)
-tasksRouter.post('/', upload.single('file'), (req, res) => {
-  let { title, description, category_id, status } = req.body;
-
-  // If no category was selected, make it null - so category is not mandatory for give some peace to the user if they need
-  if (!category_id) category_id = null;
-  
-  // If a file was uploaded, save its name
-  const file_name = req.file ? req.file.filename : null;
-
-  const sql = `
-    INSERT INTO tasks (title, description, category_id, status, file_name) 
-    VALUES (?, ?, ?, ?, ?)
-  `;
-
-  db.query(sql, [title, description, category_id, status, file_name], (err, result) => {
-    if (err) {
-      console.error('Error adding task:', err);
-      return res.status(500).send('Internal Server Error');
+    const [task] = await db.query('SELECT * FROM tasks WHERE id = ? AND user_id = ?', [taskId, req.user.id]);
+    if (task.length === 0) {
+      return res.status(404).json({ message: 'Task not found' });
     }
-
-    res.json({ message: 'Task added successfully', taskId: result.insertId });
-  });
+    res.json(task[0]);
+  } catch (error) {
+    console.error('Database error (GET /tasks/:id):', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
-// Update task (can update text + category + file)
-tasksRouter.put('/:id', upload.single('file'), (req, res) => {
-  const { title, description, category_id, status, remove_image } = req.body;
-  const { id } = req.params;
+// Create a new task
+router.post('/', authMiddleware, async (req, res) => {
+  console.log('Incoming request body:', req.body); // Debug: Log the incoming request body
+  console.log('Authenticated user:', req.user); // Debug: Log the authenticated user
 
-  let sql = `
-    UPDATE tasks 
-    SET title = ?, description = ?, category_id = ?, status = ?
-  `;
-  const params = [title, description, category_id, status];
-
-  // If a new image is uploaded, replace the old one
-  if (req.file) {
-    // If a new file is uploaded, update it
-    sql += `, file_name = ?`;
-    params.push(req.file.filename);
-  } else if (remove_image === 'true') {
-    // If image is removed from the modal, clear it from  from the database
-    sql += `, file_name = NULL`;
+  if (!req.body || Object.keys(req.body).length === 0) {
+    console.error('Validation error: Request body is empty');
+    return res.status(400).json({ message: 'Request body cannot be empty' });
   }
 
-  sql += ` WHERE id = ? LIMIT 1`;
-  params.push(id);
+  const { title, description, status } = req.body;
 
-  db.query(sql, params, (err) => {
-    if (err) {
-      console.error('Error updating task:', err);
-      return res.status(500).send('Internal Server Error');
+  if (!title || !status) {
+    console.error('Validation error: Title and status are required');
+    return res.status(400).json({ message: 'Title and status are required' });
+  }
+
+  try {
+    const [result] = await db.query(
+      'INSERT INTO tasks (title, description, status, user_id) VALUES (?, ?, ?, ?)',
+      [title, description || null, status || 'not_started', req.user.id]
+    );
+    const [newTask] = await db.query('SELECT * FROM tasks WHERE id = ?', [result.insertId]);
+    res.status(201).json(newTask[0]);
+  } catch (error) {
+    console.error('Error creating task:', error); // Debug: Log any errors
+    res.status(500).json({ message: 'Failed to create task', error: error.message });
+  }
+});
+// Update an existing task
+router.put('/:id', authMiddleware, upload.single('file'), validateTaskInput, async (req, res) => {
+  const taskId = req.params.id;
+  let { title, description, status, category_id } = parseRequestBody(req);
+  const file = req.file;
+
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    if (!category_id || category_id === 'null' || category_id === '') {
+      category_id = null;
+    }
+
+    const [oldTask] = await db.query('SELECT file_name FROM tasks WHERE id = ? AND user_id = ?', [taskId, req.user.id]);
+    if (oldTask.length && oldTask[0].file_name) {
+      const oldFilePath = path.join(__dirname, '../uploads', oldTask[0].file_name);
+      fs.unlink(oldFilePath, (err) => {
+        if (err) console.error('Error deleting old file:', err);
+      });
+    }
+
+    const [result] = await db.query(
+      'UPDATE tasks SET title = ?, description = ?, status = ?, category_id = ?, file_name = ? WHERE id = ? AND user_id = ?',
+      [title, description, status, category_id, file?.filename || null, taskId, req.user.id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Task not found or not authorized' });
     }
 
     res.json({ message: 'Task updated successfully' });
-  });
+  } catch (error) {
+    console.error('Database error (PUT /tasks/:id):', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
 });
 
-
-// Delete task by ID
-tasksRouter.delete('/:id', (req, res) => {
-  const { id } = req.params;
-
-  const sql = `DELETE FROM tasks WHERE id = ? LIMIT 1`;
-
-  db.query(sql, [id], (err) => {
-    if (err) {
-      console.error('Error deleting task:', err);
-      return res.status(500).send('Internal Server Error');
+// Delete a task
+router.delete('/:id', authMiddleware, async (req, res) => {
+  const taskId = req.params.id;
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    res.json({ message: 'Task deleted successfully' });
-  });
+    const [result] = await db.query('DELETE FROM tasks WHERE id = ? AND user_id = ?', [taskId, req.user.id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Task not found or not authorized' });
+    }
+    res.json({ message: 'Task deleted' });
+  } catch (error) {
+    console.error('Database error (DELETE /tasks/:id):', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
-module.exports = tasksRouter;
+module.exports = router;

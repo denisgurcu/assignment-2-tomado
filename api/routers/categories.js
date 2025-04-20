@@ -1,86 +1,92 @@
 const express = require('express');
-// our database connection
-const db = require('../db');
+const auth = require('../middleware/auth'); // Import the auth middleware
+const db = require('../db'); // Import your database connection or query helper
 
-const categoriesRouter = express.Router();
+const router = express.Router();
 
-// Get all categories from the database
-categoriesRouter.get('/', (req, res) => {
-  // SQL will get everything from the categories table on the backend side
-  const sql = `SELECT * FROM categories`;
+// Get all categories (protected route)
+router.get('/', auth, async (req, res) => {
+  try {
+    // Fetch user-specific categories
+    const [categories] = await db.query('SELECT * FROM categories');
+       console.log(categories); // Log the result to ensure it's correct
 
-  db.query(sql, (err, results) => {
-    if (err) {
-      // log error - if any 
-      console.error('Error fetching categories:', err);
-      return res.status(500).send('Internal Server Error');
-    }
-      // if no error, send back the list of categories as JSON
-    res.json(results);
-  });
-});
-
-// Add a new category
-categoriesRouter.post('/', (req, res) => {
-  const { name, emoji } = req.body;
-
-  // Check if the name was provided — we can't add a category without it
-  if (!name) {
-    return res.status(400).json({ message: 'Category name is required' });
+    res.json(categories);
+  } catch (error) {
+    console.error('Database error (GET /categories):', error); // Improved error logging
+    res.status(500).json({ message: 'Server error' });
   }
-
-  // SQL will insert a new category
-  const sql = `INSERT INTO categories (name, emoji) VALUES (?, ?)`;
-  // Run the insert query
-  db.query(sql, [name, emoji || null], (err, result) => {
-    if (err) {
-      console.error('Error adding category:', err);
-      return res.status(500).send('Internal Server Error');
-    }
-    // Return a success message and the new category's id
-    res.status(201).json({ message: 'Category added successfully', categoryId: result.insertId });
-  });
 });
 
-// DELETE a category
-categoriesRouter.delete('/:id', (req, res) => {
-  const { id } = req.params;
-
-  // SQL will delete it
-  const sql = `DELETE FROM categories WHERE id = ?`;
-
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      console.error('Error deleting category:', err);
-      return res.status(500).send('Internal Server Error');
+// Get a specific category by ID (protected route)
+router.get('/:id', auth, async (req, res) => {
+  const categoryId = req.params.id;
+  try {
+    // Fetch a specific category for the authenticated user
+    const [category] = await db.query('SELECT * FROM categories WHERE id = ? AND user_id = ?', [categoryId, req.user.id]);
+    if (category.length === 0) {
+      return res.status(404).json({ message: 'Category not found' });
     }
-
-    res.json({ message: 'Category deleted successfully' });
-  });
-});
-
-// PUT - Update an existing category
-categoriesRouter.put('/:id', (req, res) => {
-  const { name, emoji } = req.body;
-  const { id } = req.params;
-
-  // Make sure there's a name - we can't save a nameless category
-  if (!name) {
-    return res.status(400).json({ message: 'Name is required' });
+    res.json(category[0]);
+  } catch (error) {
+    console.error('Database error (GET /categories/:id):', error); // Improved error logging
+    res.status(500).json({ message: 'Server error' });
   }
-
-  const sql = `UPDATE categories SET name = ?, emoji = ? WHERE id = ?`;
-
-  // Run the update query
-  db.query(sql, [name, emoji || null, id], (err, result) => {
-    if (err) {
-      console.error('Error updating category:', err);
-      return res.status(500).send('Internal Server Error');
-    }
-
-    res.json({ message: 'Category updated successfully' });
-  });
 });
 
-// the export to use it elsewhere
-module.exports = categoriesRouter;
+// Create a new category (protected route)
+router.post('/', auth, async (req, res) => {
+  const { name } = req.body;
+  if (!name) {
+    return res.status(400).json({ message: 'Category name is required' }); // Validation
+  }
+  try {
+    // Insert a new category for the authenticated user
+    const [result] = await db.query('INSERT INTO categories (name, user_id) VALUES (?, ?)', [name, req.user.id]);
+    res.status(201).json({ message: 'Category created', categoryId: result.insertId });
+  } catch (error) {
+    console.error('Database error (POST /categories):', error); // Improved error logging
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update an existing category (protected route)
+router.put('/:id', auth, async (req, res) => {
+  const categoryId = req.params.id;
+  const { name } = req.body;
+  if (!name) {
+    return res.status(400).json({ message: 'Category name is required' }); // Validation
+  }
+  try {
+    // Update a category for the authenticated user
+    const [result] = await db.query(
+      'UPDATE categories SET name = ? WHERE id = ? AND user_id = ?',
+      [name, categoryId, req.user.id]
+    );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Category not found or not authorized' });
+    }
+    res.json({ message: 'Category updated' });
+  } catch (error) {
+    console.error('Database error (PUT /categories/:id):', error); // Improved error logging
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete a category (protected route)
+router.delete('/:id', auth, async (req, res) => {
+  const categoryId = req.params.id;
+  try {
+    // Delete a category for the authenticated user
+    const [result] = await db.query('DELETE FROM categories WHERE id = ? AND user_id = ?', [categoryId, req.user.id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Category not found or not authorized' });
+    }
+    res.json({ message: 'Category deleted' });
+  } catch (error) {
+    console.error('Database error (DELETE /categories/:id):', error); // Improved error logging
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+module.exports = router;

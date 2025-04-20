@@ -1,19 +1,14 @@
-// db.js
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise'); // Use the promise-based API
 
-const db = mysql.createConnection({
+// Create a connection pool
+const db = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: 'root', 
-  database: 'tomado_db'
-});
-
-db.connect((err) => {
-  if (err) {
-    console.error('Database connection failed:', err);
-    return;
-  }
-  console.log('Connected to MySQL database');
+  database: 'tomado_db',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
 module.exports = db;

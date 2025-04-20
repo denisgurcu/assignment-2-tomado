@@ -1,69 +1,92 @@
 import { useState, useEffect } from 'react';
+import axiosInstance from '../api/axiosConfig'; // Ensure this path matches your project structure
 import './AddTaskModal.css';
 import { FaChevronDown, FaTrash } from 'react-icons/fa';
 
-// this is the modal where users can add a new task
 export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) {
-    // These are the form fields for the task
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // when the modal opens, get all available categories from the server
+  // Fetch categories when modal is opened
   useEffect(() => {
     if (isOpen) {
-      fetch('http://localhost:3000/categories')
-        .then(res => res.json())
-        .then(data => setCategories(data));
+      fetchCategories();
     }
   }, [isOpen]);
 
-  // When a file is selected, convert it to a preview image using FileReader
+  const fetchCategories = async () => {
+    try {
+      console.log('Fetching categories...');
+      const response = await axiosInstance.get('/categories');
+      console.log('Categories fetched:', response.data);
+      setCategories(response.data);
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+      setError('Failed to load categories. Please try again.');
+    }
+  };
+
+  // Generate image preview when a file is selected
   useEffect(() => {
     if (!file) return setPreview(null);
+    console.log('Generating preview for file:', file.name);
     const reader = new FileReader();
     reader.onloadend = () => setPreview(reader.result);
     reader.readAsDataURL(file);
   }, [file]);
 
-  // this runs when the form is submitted
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title) return; // no submission without a title
-
+    setError(null); // Clear previous errors
+  
+    console.log('Submitting task:', { title, description, categoryId, currentColumn, file });
+    if (!title.trim()) {
+      alert('Title is required!');
+      return;
+    }
+  
+    setLoading(true);
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
-    formData.append('category_id', categoryId || ''); formData.append('status', currentColumn); // Use the current column as the default status
+    formData.append('category_id', categoryId || '');
+    formData.append('status', currentColumn); // Use the current column as the default status
     if (file) formData.append('file', file);
-
+  
     try {
-      // Send the task to the backend
-      const res = await fetch('http://localhost:3000/tasks', {
-        method: 'POST',
-        body: formData
-      });
-
-      const data = await res.json();
-
-      // reset the form and close the modal
-      if (res.ok) {
+      const response = await axiosInstance.post('/tasks', formData);
+      console.log('Task creation response:', response);
+  
+      if (response.status === 200 || response.status === 201) {
+        console.log('Task created successfully:', response.data);
         onAdd(); // Refresh task list
-        onClose();  // Close modal
-        setTitle('');
-        setDescription('');
-        setCategoryId('');
-        setFile(null);
-        setPreview(null);
+        onClose(); // Close modal
+        resetForm(); // Clear form fields
       } else {
-        alert("Something went wrong: " + (data?.message || 'Unknown error'));
+        console.error('Unexpected response:', response);
+        alert('Something went wrong: ' + (response.data?.message || 'Unknown error'));
       }
     } catch (err) {
-      alert('Network error!');
+      console.error('Error submitting task:', err);
+      setError('Failed to add task. Please try again.');
+    } finally {
+      setLoading(false);
     }
+  };
+  // Reset form fields
+  const resetForm = () => {
+    setTitle('');
+    setDescription('');
+    setCategoryId('');
+    setFile(null);
+    setPreview(null);
   };
 
   // If modal is not open, don’t render anything
@@ -72,8 +95,11 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
   return (
     <div className="modal-overlay">
       <div className="modal-box">
-        <button className="close-btn" onClick={onClose}>×</button>
+        <button className="close-btn" onClick={onClose}>
+          ×
+        </button>
         <h3>ADD NEW TASK</h3>
+        {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
           <label htmlFor="title">Title:</label>
           <input
@@ -110,7 +136,6 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
             <FaChevronDown className="select-arrow" />
           </div>
 
-
           <label htmlFor="file" className="file-upload">
             Upload Image (optional)
             <input
@@ -135,11 +160,13 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
               >
                 <FaTrash size={12} />
               </button>
-
             </div>
           )}
+
           <div className="modal-actions">
-            <button type="submit">Add Task</button>
+            <button type="submit" disabled={loading}>
+              {loading ? 'Adding Task...' : 'Add Task'}
+            </button>
           </div>
         </form>
       </div>
