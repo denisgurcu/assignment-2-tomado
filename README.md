@@ -16,6 +16,7 @@ This project is currently under development. Here's the current status:
 
 ### ✅ **Things That Work**:
 - **User Authentication**:
+  - Users can register and login.
   - Users cannot access the app unless logged in (future update will allow public access).
   - User login works and persists across browser sessions.
 - **Task Management**:
@@ -83,6 +84,17 @@ npm run dev
 
 ---
 
+### Testing with Demo User
+
+You can log in with the following demo credentials:
+
+- **Email**: `demo@example.com`
+- **Password**: `demo1234`
+
+Alternatively, you can register your own account to test the app.
+
+---
+
 ## 🔗 Notes for Instructor
 
-😢 Thank you for reviewing this project. It is still a work in progress, and some features are incomplete. Your understanding is appreciated.
+😢😢😢😢😢😢😢 Thank you for reviewing this project. It is still a work in progress, and some features are incomplete. Your understanding is appreciated.😢😢😢😢😢😢😢
