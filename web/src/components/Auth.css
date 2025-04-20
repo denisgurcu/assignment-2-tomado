@@ -1,0 +1,116 @@
+/* General styling for the login and register forms */
+.auth-container {
+    max-width: 500px;
+    width: 100%;
+    margin: 80px auto;
+    padding: 20px;
+    background-color: #2a2a2a;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    color: white;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;  /* Left align content */
+  }
+  
+  .auth-container h2 {
+    margin-bottom: 20px;
+    font-family: var(--font-helvetica);
+    font-size: 2rem;
+    color: var(--white);
+    text-align: left;
+  }
+  
+  /* Add description above the form */
+  .auth-container p {
+    text-align: left;
+    font-size: 1rem;
+    color: white;
+    font-family: var(--font-mono);
+    margin-bottom: 20px;
+  }
+  
+  /* Label styling */
+  .auth-container label {
+    display: block;
+    font-weight: bold;
+    margin: 10px 0 5px;
+    color: white;
+    font-size: 1rem;
+    font-family: var(--font-mono);
+  }
+  
+  /* Input field styles */
+  .auth-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--blue);
+    border-radius: 8px;
+    font-size: 16px;
+    color: white;
+    background-color: #333;
+    font-family: var(--font-mono);
+  }
+  
+  /* Input field focus styles */
+  .auth-container input:focus {
+    outline: none;
+    border-color: var(--yellow);
+  }
+  
+  /* Login button styling */
+  .auth-container button {
+    background: var(--blue);
+    font-family: var(--font-mono);
+    border: none;
+    color: var(--softgray);
+    padding: 1rem 4rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+  }
+  
+  /* Login button hover effect */
+  .auth-container button:hover {
+    background-color: var(--yellow);
+  }
+  
+  /* Register link styling */
+  .auth-container a {
+    color: var(--yellow);
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  /* Register link hover effect */
+  .auth-container a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Error message */
+  .error-message {
+    color: red;
+    font-size: 14px;
+    text-align: left;
+    margin-top: 10px;
+  }
+  
+  /* For mobile responsiveness */
+  @media (max-width: 480px) {
+    .auth-container {
+      padding: 15px;
+    }
+  
+    .auth-container h2 {
+      font-size: 1.3rem;
+    }
+  
+    .auth-container input, .auth-container button {
+      font-size: 14px;
+    }
+  }
+  

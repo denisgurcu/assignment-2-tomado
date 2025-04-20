@@ -4,7 +4,6 @@ import { FaChevronDown, FaTrash } from 'react-icons/fa';
 
 // this is the modal where users can add a new task
 export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) {
-    // These are the form fields for the task
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -12,16 +11,23 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
   const [preview, setPreview] = useState(null);
   const [categories, setCategories] = useState([]);
 
-  // when the modal opens, get all available categories from the server
   useEffect(() => {
     if (isOpen) {
       fetch('http://localhost:3000/categories')
         .then(res => res.json())
-        .then(data => setCategories(data));
+        .then(data => {
+          console.log('Fetched categories:', data);  // Check what you're getting back
+          if (Array.isArray(data)) {
+            setCategories(data);
+          } else {
+            console.error('Expected an array of categories, but received:', data);
+            setCategories([]);  // Set to empty array if data is invalid
+          }
+        });
     }
   }, [isOpen]);
+  
 
-  // When a file is selected, convert it to a preview image using FileReader
   useEffect(() => {
     if (!file) return setPreview(null);
     const reader = new FileReader();
@@ -29,30 +35,34 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
     reader.readAsDataURL(file);
   }, [file]);
 
-  // this runs when the form is submitted
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title) return; // no submission without a title
-
+  
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
-    formData.append('category_id', categoryId || ''); formData.append('status', currentColumn); // Use the current column as the default status
+    formData.append('category_id', categoryId || '');
+    formData.append('status', currentColumn); // Use the current column as the default status
     if (file) formData.append('file', file);
-
+  
     try {
+      const token = localStorage.getItem("authToken");  // Get the JWT token from localStorage
+  
       // Send the task to the backend
       const res = await fetch('http://localhost:3000/tasks', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,  // Include token in header
+        },
         body: formData
       });
-
+  
       const data = await res.json();
-
-      // reset the form and close the modal
+  
       if (res.ok) {
         onAdd(); // Refresh task list
-        onClose();  // Close modal
+        onClose(); // Close modal
         setTitle('');
         setDescription('');
         setCategoryId('');
@@ -65,8 +75,7 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
       alert('Network error!');
     }
   };
-
-  // If modal is not open, don’t render anything
+  
   if (!isOpen) return null;
 
   return (
@@ -110,7 +119,6 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
             <FaChevronDown className="select-arrow" />
           </div>
 
-
           <label htmlFor="file" className="file-upload">
             Upload Image (optional)
             <input
@@ -135,9 +143,9 @@ export default function AddTaskModal({ isOpen, onClose, onAdd, currentColumn }) 
               >
                 <FaTrash size={12} />
               </button>
-
             </div>
           )}
+
           <div className="modal-actions">
             <button type="submit">Add Task</button>
           </div>

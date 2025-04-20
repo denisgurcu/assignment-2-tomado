@@ -6,6 +6,7 @@
     width: 100%;
     max-width: 1200px;
     margin-top: 2rem; /* 👈 Add this */
+    margin-bottom: 3rem; /* Add space below the Pomodoro Timer */
 
   }
   
