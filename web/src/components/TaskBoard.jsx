@@ -29,47 +29,40 @@ export default function TaskBoard() {
 
 
   // Get all tasks from the backend and put them into the right column
-// This will send the JWT token in the Authorization header
-const fetchTasks = () => {
-  const token = localStorage.getItem('authToken');  // Retrieve the token from localStorage
+  const fetchTasks = () => {
+    axios.get('http://localhost:3000/tasks')
+      .then(res => {
+        console.log(' Tasks returned:', res.data);
+        const freshColumns = {
+          not_started: { name: 'Not Started', color: 'var(--orange)', items: [] },
+          in_progress: { name: 'In Progress', color: 'var(--yellow)', items: [] },
+          done: { name: 'Done', color: 'var(--green)', items: [] }
+        };
 
-  // Send the token in the Authorization header
-  axios.get('http://localhost:3000/tasks', {
-    headers: {
-      'Authorization': `Bearer ${token}`  // Include the token in the request header
-    }
-  })
-  .then(res => {
-    console.log('Tasks returned:', res.data);
-    const freshColumns = {
-      not_started: { name: 'Not Started', color: 'var(--orange)', items: [] },
-      in_progress: { name: 'In Progress', color: 'var(--yellow)', items: [] },
-      done: { name: 'Done', color: 'var(--green)', items: [] }
-    };
 
-    // Organize tasks by status
-    res.data.forEach(task => {
-      const status = task.status || 'not_started';
-      if (!freshColumns[status]) {
-        freshColumns[status] = { name: status, color: 'gray', items: [] };
-      }
+        res.data.forEach(task => {
+          const status = task.status || 'not_started';
+          if (!freshColumns[status]) {
+            freshColumns[status] = { name: status, color: 'gray', items: [] };
+          }
 
-      freshColumns[status].items.push({
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        category: task.category_name,
-        category_id: task.category_id,
-        category_emoji: task.category_emoji,
-        image: task.file_name,
-        status: task.status
-      });
-    });
+          // Organize each task under its column
+          freshColumns[status].items.push({
+            id: task.id, //  keep it numeric
+            title: task.title,
+            description: task.description,
+            category: task.category_name,
+            category_id: task.category_id,
+            category_emoji: task.category_emoji,
+            image: task.file_name,      //  Add image
+            status: task.status
+          });
+        });
 
-    setColumns(freshColumns);
-  })
-  .catch(err => console.error('Error fetching tasks:', err));
-};
+        setColumns(freshColumns);
+      })
+      .catch(err => console.error('Error fetching tasks:', err));
+  };
 
   // get categories from the backend
   const fetchCategories = () => {
