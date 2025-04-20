@@ -44,37 +44,28 @@ export default function EditTaskModal({ isOpen, onClose, onEdit, task, defaultSt
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title.trim()) {
-      alert('Title is required!');
-      return;
-    }
-
+    setError(null);
     setLoading(true);
+  
     const formData = new FormData();
     formData.append('title', title);
-    formData.append('description', description);
-    formData.append('status', status); // Ensure status is included
-    formData.append('category_id', categoryId ? categoryId : null); // Ensure null for empty category
-    if (file) formData.append('file', file);
-
-    console.log('Submitting task with data:', {
-      title,
-      description,
-      status,
-      category_id: categoryId ? categoryId : null, // Debugging log
-      file,
-    });
-
+    formData.append('description', description || '');
+    formData.append('status', status || '');
+    formData.append('category_id', categoryId || '');
+    if (file) {
+      formData.append('file', file);
+    }
+  
     try {
-      const response = await axiosInstance.put(`/tasks/${task.id}`, formData);
-
-      if (response.status === 200 || response.status === 204) {
-        console.log('Task updated successfully:', response.data);
-        onEdit(); // Refresh task list
-        onClose(); // Close modal
-      } else {
-        alert('Something went wrong: ' + (response.data?.message || 'Unknown error'));
-      }
+      const response = await axiosInstance.put(`/tasks/${task.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Let Axios set this automatically
+        },
+      });
+  
+      console.log('Task updated successfully:', response.data);
+      onEdit(); // Refresh task list
+      onClose(); // Close modal
     } catch (err) {
       console.error('Error updating task:', err.response?.data || err.message);
       alert('Failed to update task. Please try again.');
@@ -82,7 +73,6 @@ export default function EditTaskModal({ isOpen, onClose, onEdit, task, defaultSt
       setLoading(false);
     }
   };
-
   if (!isOpen) return null;
 
   return (

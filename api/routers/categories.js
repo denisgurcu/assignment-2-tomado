@@ -1,6 +1,8 @@
+// unfortunately doesn't work 
+ 
 const express = require('express');
 const auth = require('../middleware/auth'); // Import the auth middleware
-const db = require('../db'); // Import your database connection or query helper
+const db = require('../db'); // Import database connection 
 
 const router = express.Router();
 
@@ -29,23 +31,23 @@ router.get('/:id', auth, async (req, res) => {
     }
     res.json(category[0]);
   } catch (error) {
-    console.error('Database error (GET /categories/:id):', error); // Improved error logging
+    console.error('Database error (GET /categories/:id):', error); // just better error logging
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Create a new category (protected route)
+// create a new category (protected route)
 router.post('/', auth, async (req, res) => {
   const { name } = req.body;
   if (!name) {
-    return res.status(400).json({ message: 'Category name is required' }); // Validation
+    return res.status(400).json({ message: 'Category name is required' }); // validation
   }
   try {
     // Insert a new category for the authenticated user
     const [result] = await db.query('INSERT INTO categories (name, user_id) VALUES (?, ?)', [name, req.user.id]);
     res.status(201).json({ message: 'Category created', categoryId: result.insertId });
   } catch (error) {
-    console.error('Database error (POST /categories):', error); // Improved error logging
+    console.error('Database error (POST /categories):', error); // just better error logging
     res.status(500).json({ message: 'Server error' });
   }
 });

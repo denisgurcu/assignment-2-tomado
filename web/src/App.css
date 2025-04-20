@@ -8,3 +8,29 @@
   gap: 3rem;
   box-sizing: border-box;
 }
+
+/* Header for positioning LogoutButton */
+
+
+/* Styling for LogoutButton */
+.logout-button {
+  position: absolute; /* Position relative to the nearest positioned ancestor */
+  top: 30px; /* Adjust as needed for spacing */
+  right: 30px; /* Adjust as needed for spacing */
+  background: var(--blue);
+  font-family: var(--font-mono);
+  border: none;
+  color: var(--softgray);
+  padding: 1rem 4rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.logout-button:hover {
+  background: var(--yellow);
+  color: var(--black);
+}
+

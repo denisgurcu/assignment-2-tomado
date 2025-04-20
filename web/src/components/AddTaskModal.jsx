@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axiosInstance from '../api/axiosConfig'; // Ensure this path matches your project structure
+import axiosInstance from '../api/axiosConfig'; 
 import './AddTaskModal.css';
 import { FaChevronDown, FaTrash } from 'react-icons/fa';
 

@@ -5,7 +5,10 @@ const LogoutButton = () => {
   const { signOut } = useAuth();
 
   return (
-    <button onClick={signOut} style={{ marginTop: "20px", cursor: "pointer" }}>
+    <button
+      onClick={signOut}
+      className="logout-button"
+    >
       Logout
     </button>
   );

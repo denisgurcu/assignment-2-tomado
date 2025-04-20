@@ -10,25 +10,22 @@ It blends a drag-and-drop task board with a Pomodoro timer, letting users organi
 
 ---
 
-## ✨ Features
+## 🚧 **Work In Progress**
 
-- Drag and drop tasks across columns (Not Started, In Progress, Done)
-- Add, edit, and delete tasks with optional image and category
-- Upload + preview images (with delete option)
-- Filter tasks by custom emoji-supported categories
-- Pomodoro timer with automatic cycles and sound cues
-- "Done" tasks appear with strike-through for clarity
-- Interactive front-end built with React
+This project is currently under development. Here's the current status:
 
----
+### ✅ **Things That Work**:
+- **User Authentication**:
+  - Users cannot access the app unless logged in (future update will allow public access).
+  - User login works and persists across browser sessions.
+- **Task Management**:
+  - Users can add tasks under their specific account.
+  - Tasks are saved to local storage and persist across sessions.
+  - Users can delete tasks, and changes are saved to local storage.
 
-## ⏱️ Pomodoro Logic
-
-- 25 minutes of focus → 5-minute short break
-- After 4 focus sessions → 15-minute long break
-- Automatic transitions with unique sounds for each stage
-- Timer resets after completing one full Pomodoro cycle
-- Timer runs alongside the task board without interruptions
+### ❌ **Things That Don't Work (Yet)**:
+- Editing tasks.
+- Adding, editing, or deleting categories.
 
 ---
 
@@ -39,13 +36,18 @@ It blends a drag-and-drop task board with a Pomodoro timer, letting users organi
 | Frontend   | React (Vite), CSS Modules                        |
 | Backend    | Node.js, Express                                 |
 | Database   | MySQL                                            |
-| Packages   | multer, mysql2, body-parser, cors, emoji-picker-react, @hello-pangea/dnd, nodemon |
+| Packages   | multer, mysql2, body-parser, cors, emoji-picker-react, @hello-pangea/dnd, nodemon, react-router-dom, axios |
 
 ---
 
-## ⚙️ How to Run Locally
+## ⚙️ How to Access
 
-### 1. Set up the Backend (API)
+### Live Demo (if applicable)
+> [Insert Live URL here]
+
+### Running Locally
+
+#### 1. Set up the Backend (API)
 
 ```bash
 cd assignment-2-tomado/api
@@ -69,7 +71,7 @@ npm run dev
 
 > Backend runs at: `http://localhost:3000`
 
-### 2. Set up the Frontend
+#### 2. Set up the Frontend
 
 ```bash
 cd ../web
@@ -83,13 +85,4 @@ npm run dev
 
 ## 🔗 Notes for Instructor
 
-- All required CRUD operations are implemented.
-- Routes are modular using Express routers.
-- Uploaded files are handled with `multer` and served from a static directory.
-- Includes 2 MySQL tables: `tasks` and `categories` (linked via foreign key).
-- Tasks can be filtered, edited, and visualized using Pomodoro productivity logic.
-- The exported `.sql` file is provided in `/api/tomado-db.sql`.
-
----
-
-
+😢 Thank you for reviewing this project. It is still a work in progress, and some features are incomplete. Your understanding is appreciated.

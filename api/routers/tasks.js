@@ -1,3 +1,4 @@
+// add and delete works, update doesn't work :((((((((((((((
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
@@ -6,8 +7,18 @@ const authMiddleware = require('../middleware/auth');
 const router = express.Router();
 const db = require('../db');
 
-// Configure multer for file uploads
-const upload = multer({ dest: 'uploads/' });
+// Set up multer for file uploads
+const uploadDirectory = path.join(__dirname, '../uploads');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDirectory);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
+  },
+});
+const upload = multer({ storage });
 
 // Validation middleware for task input
 const validateTaskInput = (req, res, next) => {
@@ -93,44 +104,42 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 // Update an existing task
-router.put('/:id', authMiddleware, upload.single('file'), validateTaskInput, async (req, res) => {
+router.put('/:id', authMiddleware, upload.single('file'), async (req, res) => {
   const taskId = req.params.id;
-  let { title, description, status, category_id } = parseRequestBody(req);
-  const file = req.file;
+
+  console.log('Incoming request body:', req.body); // Debugging log
+  console.log('Uploaded file:', req.file); // Debugging log
+
+  const { title, description, status, category_id } = req.body;
+
+  if (!title || !status) {
+    return res.status(400).json({ message: 'Title and status are required' });
+  }
 
   try {
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ message: 'Unauthorized' });
+    let filePath = null;
+    if (req.file) {
+      filePath = `/uploads/${req.file.filename}`;
     }
 
-    if (!category_id || category_id === 'null' || category_id === '') {
-      category_id = null;
-    }
-
-    const [oldTask] = await db.query('SELECT file_name FROM tasks WHERE id = ? AND user_id = ?', [taskId, req.user.id]);
-    if (oldTask.length && oldTask[0].file_name) {
-      const oldFilePath = path.join(__dirname, '../uploads', oldTask[0].file_name);
-      fs.unlink(oldFilePath, (err) => {
-        if (err) console.error('Error deleting old file:', err);
-      });
-    }
-
+    // Update the task in the database
     const [result] = await db.query(
-      'UPDATE tasks SET title = ?, description = ?, status = ?, category_id = ?, file_name = ? WHERE id = ? AND user_id = ?',
-      [title, description, status, category_id, file?.filename || null, taskId, req.user.id]
+      'UPDATE tasks SET title = ?, description = ?, status = ?, category_id = ?, file_path = ? WHERE id = ? AND user_id = ?',
+      [title, description || null, status, category_id || null, filePath, taskId, req.user.id]
     );
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Task not found or not authorized' });
     }
 
-    res.json({ message: 'Task updated successfully' });
+    // Fetch the updated task to return in the response
+    const [updatedTask] = await db.query('SELECT * FROM tasks WHERE id = ?', [taskId]);
+    res.status(200).json(updatedTask[0]);
   } catch (error) {
-    console.error('Database error (PUT /tasks/:id):', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error('Error updating task:', error); // Debugging log
+    res.status(500).json({ message: 'Failed to update task', error: error.message });
   }
 });
-
 // Delete a task
 router.delete('/:id', authMiddleware, async (req, res) => {
   const taskId = req.params.id;
