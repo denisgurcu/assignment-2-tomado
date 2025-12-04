@@ -43,9 +43,6 @@ This project is currently under development. Here's the current status:
 
 ## ⚙️ How to Access
 
-### Live Demo (if applicable)
-> [Insert Live URL here]
-
 ### Running Locally
 
 #### 1. Set up the Backend (API)
